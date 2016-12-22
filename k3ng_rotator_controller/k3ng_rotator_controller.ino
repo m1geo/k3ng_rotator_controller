@@ -321,9 +321,14 @@
   #include <LCD.h>   // required for YourDuino.com I2C LCD display
 #endif  
 
+#ifdef FEATURE_GLCD_M1GEO
+  #include <openGLCD.h>
+  #define FEATURE_LCD_DISPLAY
+#endif 
+
 #ifdef FEATURE_LCD_DISPLAY
   #include "rotator_k3ngdisplay.h"
-#endif    
+#endif       
 
 #ifdef FEATURE_WIRE_SUPPORT
   #include <Wire.h>  // required for FEATURE_I2C_LCD, any ADXL345 feature, FEATURE_AZ_POSITION_HMC5883L, FEATURE_EL_POSITION_ADAFRUIT_LSM303
@@ -922,7 +927,6 @@ void setup() {
   initialize_rotary_encoders();
 
   initialize_interrupts();
-
 
 } /* setup */
 
@@ -3946,7 +3950,6 @@ void update_display(){
   // do it ! ************************************
   k3ngdisplay.service(force_display_update_now);
   //force_display_update_now = 0;
-
 
 }  
 #endif // defined(FEATURE_LCD_DISPLAY) 

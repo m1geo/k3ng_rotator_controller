@@ -36,7 +36,6 @@
 #endif  
 
 
-
 #if defined(FEATURE_YOURDUINO_I2C_LCD)
   #define I2C_ADDR 0x20
   #define BACKLIGHT_PIN 3
@@ -71,6 +70,9 @@
   LiquidCrystal_I2C lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin, BACKLIGHT_PIN, POSITIVE);  
 #endif //FEATURE_SAINSMART_I2C_LCD
 
+#if defined(FEATURE_GLCD_M1GEO)
+  #include <openGLCD.h>
+#endif //FEATURE_GLCD_M1GEO
 
 int display_columns = 0;
 uint8_t display_rows = 0;
@@ -111,9 +113,13 @@ K3NGdisplay::K3NGdisplay(int _display_columns, int _display_rows, int _update_ti
 void K3NGdisplay::initialize(){
 
 
-  lcd.begin(display_columns, display_rows);  // if you are getting an error on this line and do not have
+  //lcd.begin(display_columns, display_rows);  // if you are getting an error on this line and do not have
                                              // any of the LCD display features enabled, remove
                                              // k3ngdisplay.h and k3ngdisplay.cpp from your ino directory
+  #ifdef FEATURE_GLCD_M1GEO
+    GLCD.Init();
+    GLCD.SelectFont(System5x7);
+  #endif
 
   #ifdef FEATURE_YOURDUINO_I2C_LCD
     lcd.setBacklightPin(BACKLIGHT_PIN, POSITIVE);
@@ -215,7 +221,7 @@ void K3NGdisplay::clear(){
 
   }
 
-  lcd.clear();
+  GLCD.ClearScreen();
   current_print_row = 0;
   current_print_column = 0;
   revert_screen_flag = 0;
@@ -258,26 +264,27 @@ void K3NGdisplay::update(){
 
   for (int x = 0;x < (display_columns*display_rows);x++){  	
     if (screen_buffer_live[x] != screen_buffer_pending[x]){  // do we have a new character to put on the screen ?
-      lcd.setCursor(Xposition(x),Yposition(x));
+      GLCD.GotoXY(6*Xposition(x),8*Yposition(x));
       if (screen_buffer_attributes_pending[x] & ATTRIBUTE_BLINK){  // does this character have the blink attribute
         if (current_blink_state){
-          lcd.print(screen_buffer_pending[x]);
+          GLCD.print(screen_buffer_pending[x]);
         } else {
-          lcd.print(' ');
+          GLCD.print(' ');
         }
       } else {
-        lcd.print(screen_buffer_pending[x]);
+        GLCD.print(screen_buffer_pending[x]);
       }
       screen_buffer_live[x] = screen_buffer_pending[x];
       screen_buffer_attributes_live[x] = screen_buffer_attributes_pending[x];
     } else {  // not a new character, do we have live character on the screen to blink?
       if (last_blink_state != current_blink_state){
         if (screen_buffer_attributes_live[x] & ATTRIBUTE_BLINK){
-        	lcd.setCursor(Xposition(x),Yposition(x));
+        	//lcd.setCursor(Xposition(x),Yposition(x));
+         GLCD.GotoXY(6*Xposition(x),8*Yposition(x));
         	if (current_blink_state){
-              lcd.print(screen_buffer_live[x]);
+              GLCD.print(screen_buffer_live[x]);
       	    } else {
-      	      lcd.print(' ');
+      	      GLCD.print(' ');
       	    }
         }
       }
@@ -294,15 +301,16 @@ void K3NGdisplay::redraw(){
   // redraw the screen with the current screen_buffer_live
 
   for (int x = 0;x < (display_columns*display_rows);x++){   
-    lcd.setCursor(Xposition(x),Yposition(x));
+    //lcd.setCursor(Xposition(x),Yposition(x));
+    GLCD.GotoXY(6*Xposition(x),8*Yposition(x));
     if (screen_buffer_attributes_live[x] & ATTRIBUTE_BLINK){  // does this character have the blink attribute
       if (current_blink_state){
-        lcd.print(screen_buffer_live[x]);
+        GLCD.print(screen_buffer_live[x]);
       } else {
-        lcd.print(' ');
+        GLCD.print(' ');
       }
     } else {
-      lcd.print(screen_buffer_live[x]);
+      GLCD.print(screen_buffer_live[x]);
     }
   }
 

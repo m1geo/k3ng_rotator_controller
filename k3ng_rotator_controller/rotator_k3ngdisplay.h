@@ -16,13 +16,13 @@
 
                                                               */
 
-#define FEATURE_4_BIT_LCD_DISPLAY
+// #define FEATURE_4_BIT_LCD_DISPLAY
 // #define FEATURE_ADAFRUIT_I2C_LCD
 // #define FEATURE_YOURDUINO_I2C_LCD
 // #define FEATURE_RFROBOT_I2C_DISPLAY
 // #define FEATURE_YWROBOT_I2C_DISPLAY
 // #define FEATURE_SAINSMART_I2C_LCD
-
+#define FEATURE_GLCD_M1GEO
 // #define FEATURE_ADAFRUIT_BUTTONS                
 
 
@@ -66,8 +66,8 @@
 #endif
 
 #define K3NG_DISPLAY_LIBRARY_VERSION "1.0.2016032901"
-#define MAX_SCREEN_BUFFER_COLUMNS 20
-#define MAX_SCREEN_BUFFER_ROWS 4
+#define MAX_SCREEN_BUFFER_COLUMNS 32 // GS
+#define MAX_SCREEN_BUFFER_ROWS 8 // GS
 
 #define ATTRIBUTE_BLINK B00000001
 
